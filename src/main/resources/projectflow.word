@@ -1,0 +1,85 @@
+Rabbit MQ Tutorials:
+
+ 
+•	Communication b/w the applications in an asynchronous way
+•	JMS – Java Message Service
+•	In the above image, App1 is the producer and App2,3,4 are the consumer. In order to send or receive messages (communicate each other) we need Message Broker.
+Hear, we are using RabitMQ as a Message broker.
+
+ 
+
+
+Here in above image You -> Message.
+
+Person X is the exchange through wich we can route the message into different queues based on the conditions.
+
+There are 4 different types of exchanges available.
+1)	Direct exchange
+2)	Fanout exchange
+3)	Topic exchange
+4)	Header exchange
+
+Direct Exchange:
+
+
+
+
+
+
+
+
+
+
+
+QUEUES:
+
+package com.rabbit.ques;
+
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
+
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.Channel;
+
+public class Publisher {
+
+	public static void main(String[] args) throws IOException, TimeoutException {
+		ConnectionFactory connectionFactory = new ConnectionFactory();
+		Connection connection = connectionFactory.newConnection();
+		Channel channel = connection.createChannel();
+		String message = "Publishing first messsage to the RabbitMQ";
+		channel.basicPublish("", "Queue-1",null , message.getBytes());
+		channel.close();
+		connection.close();
+		
+	}
+
+}
+
+Above is the code to publish the message into the queue
+
+Here,
+channel.basicPublish("", "Queue-1",null , message.getBytes());
+
+•	First parameter is the Exchange
+•	Second is the Queue name
+•	Third is the basic properties
+•	Fourth is the Message we are going to publish in the queue in the form of Bytes
+
+ 
+In the above image we could see the message we published is available under messages Total
+
+ 
+
+Above is the code for consumer.
+
+Here DeliverCallBack is the functional interface provided to get the messages from queue.
+We could see the result the messages are consumed by consumer.
+
+channel.basicConsume("Queue-1", true, deliverCallback, consumerTag -> {});
+Here the second parameter true is the response from the consumer to queue to say the message is received by the consumer successfully. 
+
+
+ 
+In the above image we could see the Consumers = 1
